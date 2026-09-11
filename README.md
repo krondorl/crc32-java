@@ -105,7 +105,7 @@ The `printCrc` function (in `Main.java`) automatically converts the String into 
 static void printCrc(String text) {
 ```
 
-[Check example at Main.java](https://github.com/krondorl/crc32-java/blob/main/java/org/example/Main.java#L20-L32)
+[Check example at Main.java](https://github.com/krondorl/crc32-java/blob/main/src/main/java/org/example/Main.java#L20-L32)
 
 If you have a byte array, you can have it directly as an input parameter.
 
@@ -113,7 +113,7 @@ If you have a byte array, you can have it directly as an input parameter.
 public static long calculateCrc(byte[] data) {
 ```
 
-[Check example at Crc32.java](https://github.com/krondorl/crc32-java/blob/main/java/org/example/Main.java#L30-L45)
+[Check example at Crc32.java](https://github.com/krondorl/crc32-java/blob/main/src/main/java/org/example/Crc32.java#L30-L45)
 
 **Warning**: in any other cases you need to handle conversion to byte array manually.
 
