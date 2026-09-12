@@ -26,18 +26,6 @@ Java implementation of the CRC-32 checksum algorithm. It provides a compact, dep
 
 ## Usage
 
-The library usage depends on whether you have a String or a byte array.
-
-The `printCrc` function (in `Main.java`) automatically converts the String into a byte array.
-
-```Java
-static void printCrc(String text) {
-```
-
-[Check example at Main.java](https://github.com/krondorl/crc32-java/blob/main/src/main/java/org/example/Main.java#L20-L32)
-
-If you have a byte array, you can have it directly as an input parameter.
-
 ```Java
 public static long calculateCrc(byte[] data) {
 ```
@@ -45,28 +33,6 @@ public static long calculateCrc(byte[] data) {
 [Check example at Crc32.java](https://github.com/krondorl/crc32-java/blob/main/src/main/java/org/example/Crc32.java#L30-L45)
 
 **Warning**: in any other cases you need to handle conversion to byte array manually.
-
-## Running Main
-
-```bash
-mvn package
-mvn compile
-java -cp target/classes org.example.Main
-```
-
-The output will look like this:
-
-```bash
-PS C:\Dev\crc32-java> java -cp target/classes org.example.Main
-
-Crc32 library test
-
-String 1234567
-? crc32 value 0x5003699f
-
-String
-? An error occurred: Cannot calculate CRC for an empty array (possible empty String given).
-```
 
 ## License
 
@@ -79,5 +45,5 @@ Please check the [`LICENSE`](LICENSE) file.
 
 ## History
 
-- 12th September, 2026: added Javadoc, refactored exceptions, Gradle deleted, docs updated, Uint8Array renamed, private constructor, final class
+- 12th September, 2026: removed Main.java, added Javadoc, refactored exceptions, Gradle deleted, docs updated, Uint8Array renamed, private constructor, final class
 - 11th September, 2026: Java port made based on crc32-ts, README, assets.
