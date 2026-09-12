@@ -6,7 +6,8 @@
  * MIT Licensed
  */
 
-import org.example.Crc32;
+package org.example;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -47,19 +48,19 @@ class Crc32Test {
     class ErrorHandlingTests {
 
         @Test
-        @DisplayName("should throw an error for an invalid input type")
+        @DisplayName("should throw an error for null input")
         void testInvalidInput() {
             // Java prevents non-byte[] types at compile time; testing null input for runtime check
-            IllegalArgumentException exception = assertThrows(
-                    IllegalArgumentException.class,
+            NullPointerException exception = assertThrows(
+                    NullPointerException.class,
                     () -> Crc32.calculateCrc(null)
             );
 
-            assertEquals("Invalid input: data must be a byte array.", exception.getMessage());
+            assertEquals("data must not be null", exception.getMessage());
         }
 
         @Test
-        @DisplayName("should throw an error for an empty Uint8Array")
+        @DisplayName("should throw an error for an empty array")
         void testEmptyArray() {
             byte[] emptyArray = new byte[0];
 
@@ -68,7 +69,7 @@ class Crc32Test {
                     () -> Crc32.calculateCrc(emptyArray)
             );
 
-            assertEquals("Cannot calculate CRC for an empty array (possible empty String given).", exception.getMessage());
+            assertEquals("data must not be empty", exception.getMessage());
         }
     }
 }
