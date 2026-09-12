@@ -8,7 +8,7 @@
 
 package org.example;
 
-public class Crc32 {
+public final class Crc32 {
 
     private static final int CRC32_POLYNOMIAL = 0xEDB88320;
     private static final int[] TABLE = new int[256];
@@ -25,6 +25,10 @@ public class Crc32 {
             }
             TABLE[i] = crc;
         }
+    }
+
+    private Crc32() {
+        // Utility class
     }
 
     public static long calculateCrc(byte[] data) {
