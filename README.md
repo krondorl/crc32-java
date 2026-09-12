@@ -79,4 +79,5 @@ Please check the [`LICENSE`](LICENSE) file.
 
 ## History
 
+- 12th September, 2026: Gradle deleted, docs updated, Uint8Array renamed, private constructor, final class
 - 11th September, 2026: Java port made based on crc32-ts, README, assets.
