@@ -18,11 +18,11 @@ public class Main {
     }
 
     static void printCrc(String text) {
-        byte[] uInt8Array = (text != null) ? text.getBytes(StandardCharsets.UTF_8) : null;
+        byte[] inputBytes = (text != null) ? text.getBytes(StandardCharsets.UTF_8) : null;
         System.out.println("String " + text);
 
         try {
-            long crcResult = Crc32.calculateCrc(uInt8Array);
+            long crcResult = Crc32.calculateCrc(inputBytes);
             System.out.println(String.format("✅ crc32 value 0x%x", crcResult));
         } catch (Exception error) {
             System.err.println("🔴 An error occurred: " + error.getMessage());
