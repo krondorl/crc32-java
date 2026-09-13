@@ -45,5 +45,6 @@ Please check the [`LICENSE`](LICENSE) file.
 
 ## History
 
+- 13th September, 2026: refactor to use offset, length, stream, file, path
 - 12th September, 2026: removed Main.java, added Javadoc, refactored exceptions, Gradle deleted, docs updated, Uint8Array renamed, private constructor, final class
 - 11th September, 2026: Java port made based on crc32-ts, README, assets.
