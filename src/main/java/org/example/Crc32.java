@@ -15,6 +15,16 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
+/**
+ * Utility class for calculating CRC-32 checksums.
+ *
+ * <p>This implementation uses the standard CRC-32 polynomial
+ * {@code 0xEDB88320} and supports calculating checksums from byte arrays,
+ * input streams, paths, and files.</p>
+ *
+ * <p>The resulting checksum is returned as an unsigned 32-bit value
+ * represented by a Java {@code long}.</p>
+ */
 public final class Crc32 {
     private static final int CRC32_POLYNOMIAL = 0xEDB88320;
     private static final int[] TABLE = new int[256];
@@ -37,6 +47,14 @@ public final class Crc32 {
         // Utility class
     }
 
+    /**
+     * Calculates the CRC-32 checksum of the specified byte array.
+     *
+     * @param data the byte array to process
+     * @return the CRC-32 checksum as an unsigned 32-bit value stored in a
+     * {@code long}
+     * @throws NullPointerException if {@code data} is {@code null}
+     */
     public static long calculateCrc(byte[] data) {
         Objects.requireNonNull(data, "data must not be null");
 
@@ -55,6 +73,19 @@ public final class Crc32 {
         return crc;
     }
 
+    /**
+     * Calculates the CRC-32 checksum of all bytes read from the specified
+     * input stream.
+     *
+     * <p>This method does not close the supplied input stream. The caller is
+     * responsible for closing it when necessary.</p>
+     *
+     * @param inputStream the input stream to read
+     * @return the CRC-32 checksum as an unsigned 32-bit value stored in a
+     * {@code long}
+     * @throws NullPointerException if {@code inputStream} is {@code null}
+     * @throws IOException if an I/O error occurs while reading the stream
+     */
     public static long calculateCrc(InputStream inputStream) throws IOException {
         Objects.requireNonNull(inputStream, "inputStream must not be null");
 
@@ -70,6 +101,19 @@ public final class Crc32 {
         return Integer.toUnsignedLong(crc ^ 0xFFFFFFFF);
     }
 
+    /**
+     * Calculates the CRC-32 checksum of the file referenced by the specified
+     * path.
+     *
+     * <p>The file is opened as an input stream and automatically closed after
+     * the checksum has been calculated.</p>
+     *
+     * @param path the path of the file to process
+     * @return the CRC-32 checksum as an unsigned 32-bit value stored in a
+     * {@code long}
+     * @throws NullPointerException if {@code path} is {@code null}
+     * @throws IOException if the file cannot be opened or read
+     */
     public static long calculateCrc(Path path) throws IOException {
         Objects.requireNonNull(path, "path must not be null");
 
@@ -78,6 +122,18 @@ public final class Crc32 {
         }
     }
 
+    /**
+     * Calculates the CRC-32 checksum of the specified file.
+     *
+     * <p>This method delegates to {@link #calculateCrc(Path)} using the file's
+     * {@link File#toPath()} representation.</p>
+     *
+     * @param file the file to process
+     * @return the CRC-32 checksum as an unsigned 32-bit value stored in a
+     * {@code long}
+     * @throws NullPointerException if {@code file} is {@code null}
+     * @throws IOException if the file cannot be opened or read
+     */
     public static long calculateCrc(File file) throws IOException {
         Objects.requireNonNull(file, "file must not be null");
 
