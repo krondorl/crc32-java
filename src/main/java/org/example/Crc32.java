@@ -8,19 +8,14 @@
 
 package org.example;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
 
-/**
- * Utility class for calculating CRC-32 checksums.
- *
- * <p>This implementation uses the standard reversed CRC-32 polynomial
- * {@code 0xEDB88320} and returns the checksum as an unsigned 32-bit value
- * represented by a Java {@code long}.</p>
- *
- * <p>This class cannot be instantiated.</p>
- */
 public final class Crc32 {
-
     private static final int CRC32_POLYNOMIAL = 0xEDB88320;
     private static final int[] TABLE = new int[256];
 
@@ -42,26 +37,50 @@ public final class Crc32 {
         // Utility class
     }
 
-    /**
-     * Calculates the CRC-32 checksum of the supplied byte array.
-     *
-     * @param data the non-null, non-empty data for which the checksum is calculated
-     * @return the CRC-32 checksum as an unsigned 32-bit value represented by a {@code long}
-     * @throws NullPointerException if {@code data} is {@code null}
-     * @throws IllegalArgumentException if {@code data} is empty
-     */
     public static long calculateCrc(byte[] data) {
         Objects.requireNonNull(data, "data must not be null");
 
-        if (data.length == 0) {
-            throw new IllegalArgumentException("data must not be empty");
-        }
-
         int crc = 0xFFFFFFFF;
-        for (int i = 0; i < data.length; i++) {
+
+        crc = updateCrc(crc, data, 0, data.length);
+
+        return Integer.toUnsignedLong(crc ^ 0xFFFFFFFF);
+    }
+
+    private static int updateCrc(int crc, byte[] data, int offset, int length) {
+        for (int i = offset; i < offset + length; i++) {
             crc = (crc >>> 8) ^ TABLE[(crc ^ data[i]) & 0xFF];
         }
 
+        return crc;
+    }
+
+    public static long calculateCrc(InputStream inputStream) throws IOException {
+        Objects.requireNonNull(inputStream, "inputStream must not be null");
+
+        byte[] buffer = new byte[8192];
+        int crc = 0xFFFFFFFF;
+
+        int bytesRead;
+
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            crc = updateCrc(crc, buffer, 0, bytesRead);
+        }
+
         return Integer.toUnsignedLong(crc ^ 0xFFFFFFFF);
+    }
+
+    public static long calculateCrc(Path path) throws IOException {
+        Objects.requireNonNull(path, "path must not be null");
+
+        try (InputStream inputStream = Files.newInputStream(path)) {
+            return calculateCrc(inputStream);
+        }
+    }
+
+    public static long calculateCrc(File file) throws IOException {
+        Objects.requireNonNull(file, "file must not be null");
+
+        return calculateCrc(file.toPath());
     }
 }

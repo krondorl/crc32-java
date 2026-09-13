@@ -14,7 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,7 +32,6 @@ class Crc32Test {
     @Nested
     @DisplayName("Checksum Tests - Happy Path")
     class HappyPathTests {
-
         @ParameterizedTest(name = "checks string \"{0}\" to be hex \"{1}\"")
         @CsvSource({
                 "123456789, 0xcbf43926",
@@ -36,40 +39,96 @@ class Crc32Test {
                 "Bjarne-Stroustrup, 0x4c50a184"
         })
         void testCalculateCrc(String text, String expectedHex) {
-            byte[] uInt8Array = text.getBytes(StandardCharsets.UTF_8);
-            long crcResult = Crc32.calculateCrc(uInt8Array);
+            byte[] inputBytes = text.getBytes(StandardCharsets.UTF_8);
+            long crcResult = Crc32.calculateCrc(inputBytes);
 
             assertEquals(expectedHex, intoHexString(crcResult));
         }
     }
 
-    @Nested
-    @DisplayName("Error Handling")
-    class ErrorHandlingTests {
+    @Test
+    void calculateCrcByteArrayThrowsWhenDataIsNull() {
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> Crc32.calculateCrc((byte[]) null)
+        );
 
-        @Test
-        @DisplayName("should throw an error for null input")
-        void testInvalidInput() {
-            // Java prevents non-byte[] types at compile time; testing null input for runtime check
-            NullPointerException exception = assertThrows(
-                    NullPointerException.class,
-                    () -> Crc32.calculateCrc(null)
-            );
+        assertEquals("data must not be null", exception.getMessage());
+    }
 
-            assertEquals("data must not be null", exception.getMessage());
-        }
+    @Test
+    void calculateCrcInputStreamThrowsWhenInputStreamIsNull() {
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> Crc32.calculateCrc((InputStream) null)
+        );
 
-        @Test
-        @DisplayName("should throw an error for an empty array")
-        void testEmptyArray() {
-            byte[] emptyArray = new byte[0];
+        assertEquals("inputStream must not be null", exception.getMessage());
+    }
 
-            IllegalArgumentException exception = assertThrows(
-                    IllegalArgumentException.class,
-                    () -> Crc32.calculateCrc(emptyArray)
-            );
+    @Test
+    void calculateCrcPathThrowsWhenPathIsNull() {
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> Crc32.calculateCrc((Path) null)
+        );
 
-            assertEquals("data must not be empty", exception.getMessage());
-        }
+        assertEquals("path must not be null", exception.getMessage());
+    }
+
+    @Test
+    void calculateCrcFileThrowsWhenFileIsNull() {
+        NullPointerException exception = assertThrows(
+                NullPointerException.class,
+                () -> Crc32.calculateCrc((File) null)
+        );
+
+        assertEquals("file must not be null", exception.getMessage());
+    }
+
+    @Test
+    void calculateCrcInputStreamPropagatesIOException() {
+        InputStream failingInputStream = new InputStream() {
+            @Override
+            public int read() throws IOException {
+                throw new IOException("Test read failure");
+            }
+
+            @Override
+            public int read(byte[] buffer) throws IOException {
+                throw new IOException("Test read failure");
+            }
+        };
+
+        IOException exception = assertThrows(
+                IOException.class,
+                () -> Crc32.calculateCrc(failingInputStream)
+        );
+
+        assertEquals("Test read failure", exception.getMessage());
+    }
+
+    @Test
+    void calculateCrcPathThrowsWhenFileDoesNotExist() {
+        Path path = Path.of(
+                "this-file-should-not-exist-1234567890.bin"
+        );
+
+        assertThrows(
+                IOException.class,
+                () -> Crc32.calculateCrc(path)
+        );
+    }
+
+    @Test
+    void calculateCrcFileThrowsWhenFileDoesNotExist() {
+        File file = new File(
+                "this-file-should-not-exist-1234567890.bin"
+        );
+
+        assertThrows(
+                IOException.class,
+                () -> Crc32.calculateCrc(file)
+        );
     }
 }
